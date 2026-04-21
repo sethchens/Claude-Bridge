@@ -33,17 +33,20 @@ jobs:
           --add-data "poll_pubsub.sh;." `
           setup_wizard.py
           
+    - name: Zip Executable (Bypass Browser Blocks)
+      run: Compress-Archive -Path dist/setup_wizard.exe -DestinationPath dist/Claude-Bridge-Setup.zip
+          
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Claude-Bridge-Setup
-        path: dist/setup_wizard.exe
+        path: dist/Claude-Bridge-Setup.zip
 
     - name: Publish to GitHub Releases
       uses: softprops/action-gh-release@v2
       with:
         tag_name: latest
         name: "Latest Setup Release"
-        files: dist/setup_wizard.exe
+        files: dist/Claude-Bridge-Setup.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
