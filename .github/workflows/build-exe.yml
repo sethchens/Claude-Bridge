@@ -1,0 +1,37 @@
+name: Build Magic Installer EXE
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        
+    - name: Bundle the EXE with PyInstaller
+      run: |
+        pyinstaller --onefile --console `
+          --add-data "wrapper;wrapper" `
+          --add-data "CLAUDE.md;." `
+          --add-data "poll_pubsub.sh;." `
+          setup_wizard.py
+          
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Claude-Bridge-Setup
+        path: dist/setup_wizard.exe
